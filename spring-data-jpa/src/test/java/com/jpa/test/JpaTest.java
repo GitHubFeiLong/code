@@ -72,6 +72,7 @@ public class JpaTest {
             id：主键值
          */
         Customer customer = entityManager.find(Customer.class, 1L);
+
         System.out.println("customer = " + customer);
         // 提交事务
         transaction.commit();
