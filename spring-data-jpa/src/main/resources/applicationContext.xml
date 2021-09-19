@@ -47,6 +47,15 @@
         <property name="jpaDialect">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
         </property>
+
+        <!--注入jpa的配置信息
+            加载jpa的基本配置信息和jpa实现方式的配置信息
+        -->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+            </props>
+        </property>
     </bean>
 
 

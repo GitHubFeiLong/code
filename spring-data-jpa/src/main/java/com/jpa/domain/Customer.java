@@ -2,6 +2,8 @@ package com.jpa.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * cst_customer
@@ -76,6 +78,35 @@ public class Customer implements Serializable {
      */
     @Column(name = "cust_phone")
     private String custPhone;
+
+    // 客户和联系人的关系（一对多）
+    /**
+     * 注解的形式，配置一对多
+     * 1.声明关系
+     *      OneToMany: 配置一对多关系
+     *          targetEntity 对方对象的字节码对象
+     *
+     * 2.配置外键（中间表）
+     *      JoinColumn:配置外键
+     *          name: 外键字段名称
+     *         referencedColumnName 参照主表的主键字段名称
+     *    在客户实体类上（一的一方）添加了外键的配置，所以对于客户而言，也具备了维护外键的作用
+     *
+     *    @OneToMany(mappedBy = "customer")   放弃维护外键，值是属性名
+     */
+
+    // @OneToMany(targetEntity = Linkman.class)
+    // @JoinColumn(name = "lkm_cust_id", referencedColumnName = "cust_id")
+    @OneToMany(mappedBy = "customer")
+    private Set<Linkman> linkmens = new HashSet<>();
+
+    public Set<Linkman> getLinkmens() {
+        return linkmens;
+    }
+
+    public void setLinkmens(Set<Linkman> linkmens) {
+        this.linkmens = linkmens;
+    }
 
     private static final long serialVersionUID = 1L;
 
