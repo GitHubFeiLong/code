@@ -1,9 +1,6 @@
 package com.code.job;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +10,8 @@ import java.time.LocalDateTime;
  * @Author e-Feilong.Chen
  * @Date 2021/10/21 8:36
  */
+@DisallowConcurrentExecution
+@PersistJobDataAfterExecution
 public class HelloJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         Object tv1 = jobExecutionContext.getTrigger().getJobDataMap().get("t1");
@@ -26,9 +25,15 @@ public class HelloJob implements Job {
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
+        jobExecutionContext.getTrigger().getJobDataMap().put("t1", "tvvv1");
         System.out.println("tv1 = " + tv1);
         System.out.println("jv1 = " + jv1);
         System.out.println("sv = " + sv);
         System.out.println("hello: " + LocalDateTime.now());
+        try {
+            Thread.sleep(2000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

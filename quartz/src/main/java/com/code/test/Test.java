@@ -22,7 +22,7 @@ public class Test {
                 .usingJobData("t1", "tv1")
                 .withSchedule(SimpleScheduleBuilder
                         .simpleSchedule()
-                        .withIntervalInSeconds(3)
+                        .withIntervalInSeconds(1)
                         .repeatForever()
                 ).build();
         // 创建一个job
