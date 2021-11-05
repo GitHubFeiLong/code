@@ -2,16 +2,19 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="spring-data-jpa" />
         <module name="quartz" />
+        <module name="spring-boot-data-jpa" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="quartz" target="8" />
+      <module name="spring-boot-data-jpa" target="8" />
       <module name="spring-data-jpa" target="8" />
     </bytecodeTargetLevel>
   </component>
