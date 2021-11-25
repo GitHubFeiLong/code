@@ -4,14 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.8.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
     <groupId>org.example</groupId>
     <artifactId>quartz</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <parent>
-        <artifactId>spring-boot</artifactId>
-        <groupId>org.springframework.boot</groupId>
-        <version>2.3.8.RELEASE</version>
-    </parent>
+    <packaging>jar</packaging>
     <properties>
         <mysql.version>8.0.16</mysql.version>
     </properties>
@@ -22,6 +25,18 @@
             <artifactId>quartz</artifactId>
             <version>2.3.2</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+
         <!--日志-->
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
         <dependency>
@@ -39,12 +54,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.3.8.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.3.8.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -55,7 +68,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.1.8.RELEASE</version>
         </dependency>
     </dependencies>
 
