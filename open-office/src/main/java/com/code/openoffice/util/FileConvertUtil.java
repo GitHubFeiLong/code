@@ -1,4 +1,4 @@
-package com.code.util;
+package com.code.openoffice.util;
 
 import com.artofsolving.jodconverter.DefaultDocumentFormatRegistry;
 import com.artofsolving.jodconverter.DocumentConverter;
@@ -6,6 +6,7 @@ import com.artofsolving.jodconverter.DocumentFormat;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.StreamOpenOfficeDocumentConverter;
+import com.code.openoffice.controller.OpenController;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -60,7 +61,9 @@ public class FileConvertUtil {
         connection.connect();
         DocumentConverter converter = new StreamOpenOfficeDocumentConverter(connection);
         DefaultDocumentFormatRegistry formatReg = new DefaultDocumentFormatRegistry();
-        DocumentFormat targetFormat = formatReg.getFormatByFileExtension(DEFAULT_SUFFIX);
+        // DocumentFormat targetFormat = formatReg.getFormatByFileExtension(DEFAULT_SUFFIX);
+        String type = OpenController.TYPE.get();
+        DocumentFormat targetFormat = formatReg.getFormatByFileExtension(type);
         DocumentFormat sourceFormat = formatReg.getFormatByFileExtension(suffix);
         converter.convert(inputStream, sourceFormat, out, targetFormat);
         connection.disconnect();
