@@ -25,14 +25,24 @@ public class FileConvertUtil {
     /** openoffice_port */
     private static final Integer OPENOFFICE_PORT = 8100;
 
-    /**      * 方法描述 office文档转换为PDF(处理本地文件)      *      * @param sourcePath 源文件路径      * @param suffix     源文件后缀      * @return InputStream 转换后文件输入流      */
+    /**
+     * 方法描述 office文档转换为PDF(处理本地文件)
+     * @param sourcePath 源文件路径
+     * @param suffix     源文件后缀      *
+     * @return InputStream 转换后文件输入流
+     */
     public static InputStream convertLocaleFile(String sourcePath, String suffix) throws Exception {
         File inputFile = new File(sourcePath);
         InputStream inputStream = new FileInputStream(inputFile);
         return covertCommonByStream(inputStream, suffix);
     }
 
-    /**      * 方法描述  office文档转换为PDF(处理网络文件)      *      * @param netFileUrl 网络文件路径      * @param suffix     文件后缀      * @return InputStream 转换后文件输入流      */
+    /**
+     * 方法描述  office文档转换为PDF(处理网络文件)
+     * @param netFileUrl 网络文件路径
+     * @param suffix     文件后缀
+     * @return InputStream 转换后文件输入流
+     */
     public static InputStream convertNetFile(String netFileUrl, String suffix) throws Exception {
         // 创建URL
         URL url = new URL(netFileUrl);
@@ -70,7 +80,9 @@ public class FileConvertUtil {
         return outputStreamConvertInputStream(out);
     }
 
-    /**      * 方法描述 outputStream转inputStream      */
+    /**
+     * 方法描述 outputStream转inputStream
+     */
     public static ByteArrayInputStream outputStreamConvertInputStream(final OutputStream out) throws Exception {
         ByteArrayOutputStream baos=(ByteArrayOutputStream) out;
         return new ByteArrayInputStream(baos.toByteArray());

@@ -16,14 +16,6 @@
     </parent>
 
     <dependencies>
-        <!--jodconverter 核心包 -->
-        <!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-core -->
-        <dependency>
-            <groupId>org.jodconverter</groupId>
-            <artifactId>jodconverter-core</artifactId>
-            <version>4.2.2</version>
-        </dependency>
-
         <!--springboot支持包，里面包括了自动配置类 -->
         <!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-spring-boot-starter -->
         <dependency>
@@ -31,28 +23,12 @@
             <artifactId>jodconverter-spring-boot-starter</artifactId>
             <version>4.2.2</version>
         </dependency>
-
-
         <!--jodconverter 本地支持包 -->
         <!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local -->
         <dependency>
             <groupId>org.jodconverter</groupId>
             <artifactId>jodconverter-local</artifactId>
             <version>4.2.2</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <!-- springboot热部署 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-            <scope>true</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.artofsolving/jodconverter -->
@@ -65,6 +41,28 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- springboot热部署 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+            <scope>true</scope>
+        </dependency>
+
+        <!--jodconverter 核心包 -->
+        <!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-core -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.jodconverter</groupId>-->
+        <!--            <artifactId>jodconverter-core</artifactId>-->
+        <!--            <version>4.2.2</version>-->
+        <!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <!--        <dependency>-->
+        <!--            <groupId>commons-io</groupId>-->
+        <!--            <artifactId>commons-io</artifactId>-->
+        <!--            <version>2.6</version>-->
+        <!--        </dependency>-->
     </dependencies>
 
 
