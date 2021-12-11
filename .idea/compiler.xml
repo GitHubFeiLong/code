@@ -8,24 +8,35 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="spring-data-jpa" />
+        <module name="security" />
+        <module name="open-office" />
+        <module name="flyway" />
+        <module name="screw" />
         <module name="spring-boot-data-jpa" />
         <module name="quartz" />
         <module name="jdbc" />
-        <module name="open-office" />
+        <module name="mybatis-plus" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="flyway" target="8" />
       <module name="jdbc" target="1.5" />
+      <module name="mybatis-plus" target="8" />
       <module name="open-office" target="1.8" />
       <module name="quartz" target="8" />
+      <module name="screw" target="8" />
+      <module name="security" target="8" />
       <module name="spring-boot-data-jpa" target="8" />
       <module name="spring-data-jpa" target="8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="flyway" options="-parameters" />
+      <module name="mybatis-plus" options="-parameters" />
       <module name="open-office" options="-parameters" />
       <module name="quartz" options="-parameters" />
+      <module name="security" options="-parameters" />
     </option>
   </component>
 </project>

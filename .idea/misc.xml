@@ -8,6 +8,10 @@
         <option value="$PROJECT_DIR$/spring-boot-data-jpa/pom.xml" />
         <option value="$PROJECT_DIR$/jdbc/pom.xml" />
         <option value="$PROJECT_DIR$/open-office/pom.xml" />
+        <option value="$PROJECT_DIR$/screw/pom.xml" />
+        <option value="$PROJECT_DIR$/mybatis-plus/pom.xml" />
+        <option value="$PROJECT_DIR$/flyway/pom.xml" />
+        <option value="$PROJECT_DIR$/security/pom.xml" />
       </list>
     </option>
   </component>
