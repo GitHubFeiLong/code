@@ -1,12 +1,15 @@
 package security.service.impl;
 
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import security.config.MyUserDetails;
+import security.po.RolePO;
 import security.po.UserPO;
 import security.repository.UserRepository;
 
@@ -16,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Andon
@@ -52,7 +56,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         Set<SimpleGrantedAuthority> authoritiesSet = new HashSet<>();
         // 查询用户权限
-        List<String> roles = selfAuthorityUserMapper.selectRoleNameByUserId(user.getId());
+        List<String> roles = userPO.getRolePOList().stream().map(RolePO::getRoleName).collect(Collectors.toList());
         for (String roleName : roles) {
             //用户拥有的角色
             SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(roleName);
@@ -60,7 +64,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         // 设置用户的角色
         userInfo.setAuthorities(authoritiesSet);
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userInfo;
     }
 }

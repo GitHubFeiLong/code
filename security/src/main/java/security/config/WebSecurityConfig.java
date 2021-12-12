@@ -3,6 +3,7 @@ package security.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -112,15 +113,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     public void configure(WebSecurity web) {
-        // 获取忽略资源
-        List<IgnoreResourceAntMatcher> antMatchersList = ignoreResourceScheduler.getIgnoreResourceAntMatchers();
-
-        // 添加忽略资源
-        antMatchersList.stream().forEach(p->{
-            web.ignoring().antMatchers(p.getHttpMethod(), p.getPattern());
-        });
-
-        log.info("ignore url >> {}", web.toString());
+        web.ignoring().antMatchers(HttpMethod.GET, "/demo");
     }
 
     /**

@@ -7,6 +7,8 @@ import security.config.jpa.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 类描述：
@@ -23,4 +25,8 @@ public class RolePO extends BaseEntity {
     @NotNull
     @Column(name = "role_name", nullable = false, length = 255)
     private String roleName;
+
+
 }
+
+

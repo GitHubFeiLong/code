@@ -4,9 +4,9 @@ import com.sun.istack.NotNull;
 import lombok.Data;
 import security.config.jpa.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 类描述：
@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "menu")
 public class MenuPO extends BaseEntity {
 
     @NotNull
@@ -26,4 +26,8 @@ public class MenuPO extends BaseEntity {
 
     @Column(name = "parent_id")
     private Long parentId;
+
+    @ManyToMany
+    // @JoinTable(name="role_menu", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns = {@JoinColumn(name = "menu_id")})
+    private List<RolePO> rolePOList = new ArrayList<>();
 }

@@ -6,13 +6,17 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
-import security.mapper.SelfAuthorityUserMapper;
+import security.po.MenuPO;
+import security.po.RolePO;
+import security.repository.MenuRepository;
+import security.repository.UserRepository;
 
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 类描述：
@@ -26,10 +30,10 @@ import java.util.Set;
 public class SelfFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     @Resource
-    private SelfAuthorityUserMapper selfAuthorityUserMapper;
+    private UserRepository userRepository;
 
     @Resource
-    private RedisOperationsUtil redisOperationsUtil;
+    private MenuRepository menuRepository;
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
@@ -50,7 +54,8 @@ public class SelfFilterInvocationSecurityMetadataSource implements FilterInvocat
         log.info("requestUrI >> {}，requestMethod >> {}", requestUrI, requestMethod);
 
         // 查询 请求方式的url 需要哪些权限
-        List<String> roleNames = selfAuthorityUserMapper.selectRoleNameByMenu(requestUrI, requestMethod);
+        MenuPO byMenu = menuRepository.findByMenu(requestUrI).orElseThrow(()->new RuntimeException("菜单不存在"));
+        List<String> roleNames = byMenu.getRolePOList().stream().map(RolePO::getRoleName).collect(Collectors.toList());
         // 没有角色匹配
         if (roleNames.isEmpty()) {
             return SecurityConfig.createList("ROLE_ANONYMOUS");

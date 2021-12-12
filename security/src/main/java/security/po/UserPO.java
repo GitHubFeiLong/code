@@ -28,7 +28,8 @@ public class UserPO extends BaseEntity {
     private String password;
 
     @ManyToMany(targetEntity=RolePO.class)
-    @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "id")}, inverseJoinColumns={@JoinColumn(name = "id")})
+    @JoinTable(name = "user_role_t", joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns={@JoinColumn(name = "role_id")})
     private List<RolePO> rolePOList;
 
 }
