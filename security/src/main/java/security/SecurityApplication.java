@@ -2,6 +2,7 @@ package security;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @Version 1.0
  */
 @SpringBootApplication
+@EntityScan("security.po")
 @EnableJpaAuditing
 @EnableJpaRepositories
 public class SecurityApplication {

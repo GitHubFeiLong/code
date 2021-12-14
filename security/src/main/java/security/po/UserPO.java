@@ -2,6 +2,8 @@ package security.po;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import security.config.jpa.BaseEntity;
 
 import javax.persistence.*;
@@ -17,6 +19,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "user")
+@SQLDelete(sql = "update user set deleted = true where id = ?")
+@Where(clause = "deleted = false")
 public class UserPO extends BaseEntity {
 
     @NotNull

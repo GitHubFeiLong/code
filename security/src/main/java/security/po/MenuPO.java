@@ -2,6 +2,8 @@ package security.po;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import security.config.jpa.BaseEntity;
 
 import javax.persistence.*;
@@ -18,6 +20,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "menu")
+@SQLDelete(sql = "update menu set deleted = true where id = ?")
+@Where(clause = "deleted = false")
 public class MenuPO extends BaseEntity {
 
     @NotNull
@@ -28,6 +32,7 @@ public class MenuPO extends BaseEntity {
     private Long parentId;
 
     @ManyToMany
-    // @JoinTable(name="role_menu", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns = {@JoinColumn(name = "menu_id")})
+    @JoinTable(name="role_menu", joinColumns = {@JoinColumn(name = "role_id")}
+            , inverseJoinColumns = {@JoinColumn(name = "menu_id")})
     private List<RolePO> rolePOList = new ArrayList<>();
 }
