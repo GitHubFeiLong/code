@@ -1,8 +1,6 @@
 package security.handler;
 
-import com.alibaba.fastjson.JSON;
-import com.goudong.commons.enumerate.ClientExceptionEnum;
-import com.goudong.commons.pojo.Result;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -25,12 +23,10 @@ public class UrlAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
         log.error("权限不足");
-        ClientExceptionEnum notAuthorization = ClientExceptionEnum.NOT_AUTHORIZATION;
-        Result result = Result.ofFail(notAuthorization);
 
-        httpServletResponse.setStatus(notAuthorization.getStatus());
+        httpServletResponse.setStatus(403);
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json;charset=UTF-8");
-        httpServletResponse.getWriter().write(JSON.toJSONString(result));
+        httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString("权限不足"));
     }
 }

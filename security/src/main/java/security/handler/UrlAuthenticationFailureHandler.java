@@ -1,9 +1,6 @@
 package security.handler;
 
-import com.alibaba.fastjson.JSON;
-import com.goudong.commons.enumerate.ClientExceptionEnum;
-import com.goudong.commons.exception.BasicException;
-import com.goudong.commons.pojo.Result;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -25,15 +22,11 @@ public class UrlAuthenticationFailureHandler implements AuthenticationFailureHan
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
-        ClientExceptionEnum badRequest = ClientExceptionEnum.NOT_FOUND;
-        Result<BasicException> result = Result.ofFail(badRequest);
-        result.setClientMessage(e.getMessage());
-        // TODO是否需要返回200
-        httpServletResponse.setStatus(200);
+        httpServletResponse.setStatus(402);
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         PrintWriter out = httpServletResponse.getWriter();
-        out.write(JSON.toJSONString(result));
+        out.write(new ObjectMapper().writeValueAsString("登录成功"));
         out.flush();
         out.close();
     }

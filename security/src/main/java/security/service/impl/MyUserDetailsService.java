@@ -64,7 +64,7 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         // 设置用户的角色
         userInfo.setAuthorities(authoritiesSet);
-       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userInfo;
     }
 }

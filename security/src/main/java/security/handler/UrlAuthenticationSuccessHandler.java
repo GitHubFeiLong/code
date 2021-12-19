@@ -1,12 +1,13 @@
 package security.handler;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.json.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import security.config.JwtTokenUtil;
+import security.po.UserPO;
+import security.repository.UserRepository;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -26,10 +27,7 @@ import java.io.PrintWriter;
 public class UrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Resource
-    private SelfAuthorityUserMapper selfAuthorityUserMapper;
-
-    @Resource
-    private AuthorityUserUtil authorityUserUtil;
+    private UserRepository userRepository;
 
     /**
      *
@@ -46,22 +44,20 @@ public class UrlAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         //表单输入的用户名
         String username = (String) authentication.getPrincipal();
-        // 查询用户信息
-        AuthorityUserDTO authorityUserDTO = selfAuthorityUserMapper.selectUserDetailByUsername(username);
 
-        String token = JwtTokenUtil.generateBearerToken(authorityUserDTO, JwtTokenUtil.VALID_HOUR);
+        UserPO byUsername = userRepository.findByUsername(username).orElseThrow(()->new RuntimeException(""));
+
+        // 查询用户信息
+
+        String token = JwtTokenUtil.generateBearerToken(byUsername, JwtTokenUtil.VALID_HOUR);
         httpServletResponse.setStatus(200);
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json;charset=UTF-8");
         PrintWriter out = httpServletResponse.getWriter();
         // 转成VO
-        AuthorityUserVO authorityUserVO = BeanUtil.copyProperties(authorityUserDTO, AuthorityUserVO.class);
-        out.write(JSON.toJSONString(Result.ofSuccess(authorityUserVO)));
+        out.write(new ObjectMapper().writeValueAsString(byUsername));
         // 设置到响应头里
         httpServletResponse.setHeader(JwtTokenUtil.TOKEN_HEADER, token);
-
-        // 将用户登录信息保存到redis中
-        authorityUserUtil.login(token, authorityUserDTO);
 
         out.flush();
         out.close();

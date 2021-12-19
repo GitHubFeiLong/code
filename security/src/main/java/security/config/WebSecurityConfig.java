@@ -17,11 +17,9 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import security.filter.JwtAuthorizationFilter;
 import security.handler.*;
-import security.scheduler.IgnoreResourceScheduler;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * 类描述：
@@ -90,13 +88,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Resource
     private AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource;
-
-    /**
-     * 拦截白名单查询
-     */
-    @Resource
-    private IgnoreResourceScheduler ignoreResourceScheduler;
-
 
     /**
      * 加密方式

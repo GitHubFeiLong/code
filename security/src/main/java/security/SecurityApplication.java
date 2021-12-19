@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * MapperScan 可以不在mapper层添加注解
@@ -13,9 +14,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @Version 1.0
  */
 @SpringBootApplication
-@EntityScan("security.po")
-@EnableJpaAuditing
-@EnableJpaRepositories
+@EntityScan(basePackages = {"security"})
+@EnableJpaRepositories(basePackages = {"security.repository"})
+@EnableTransactionManagement
+@EnableJpaAuditing(auditorAwareRef="myAuditorAware")
 public class SecurityApplication {
     public static void main(String[] args) {
         SpringApplication.run(SecurityApplication.class, args);
