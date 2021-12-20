@@ -1,0 +1,69 @@
+package com.security.service.impl;
+
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
+import com.security.config.MyUserDetails;
+import com.security.po.RolePO;
+import com.security.po.UserPO;
+import com.security.repository.UserRepository;
+
+import javax.annotation.Resource;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**
+ * @author Andon
+ * @date 2019/3/20
+ * <p>
+ * 自定义用户认证
+ */
+@Component
+public class MyUserDetailsService implements UserDetailsService {
+    private final UserRepository userRepository;
+    public MyUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * 根据用户登录名查询用户信息
+     * @param username 用户名/手机号/邮箱
+     * @return
+     * @throws UsernameNotFoundException
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+
+        MyUserDetails userInfo = new MyUserDetails();
+        // 查询用户信息
+        UserPO userPO = userRepository.findByUsername(username)
+                .orElseThrow(()->new RuntimeException("用户不存在"));
+
+        if (userPO != null) {
+            userInfo.setUsername(userPO.getUsername());
+            userInfo.setPassword(userPO.getPassword());
+        } else {
+            throw new BadCredentialsException("账户名与密码不匹配，请重新输入");
+        }
+
+        Set<SimpleGrantedAuthority> authoritiesSet = new HashSet<>();
+        // 查询用户权限
+        List<String> roles = userPO.getRolePOList().stream().map(RolePO::getRoleName).collect(Collectors.toList());
+        for (String roleName : roles) {
+            //用户拥有的角色
+            SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(roleName);
+            authoritiesSet.add(simpleGrantedAuthority);
+        }
+        // 设置用户的角色
+        userInfo.setAuthorities(authoritiesSet);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userInfo;
+    }
+}
