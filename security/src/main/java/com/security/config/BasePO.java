@@ -1,4 +1,4 @@
-package com.security.config.jpa;
+package com.security.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -21,13 +21,12 @@ import java.time.Instant;
  * @version 1.0
  */
 @Data
-@SuppressWarnings("unchecked")
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
-public abstract class BaseEntity implements Serializable {
+public abstract class BasePO implements Serializable {
 
-    private static final String ID_GEN = "security.config.jpa.MyIdentifierGenerator";
+    private static final String ID_GEN = "com.security.config.MyIdentifierGenerator";
     private static final long serialVersionUID = -2935429857751851837L;
 
     @Id

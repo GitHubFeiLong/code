@@ -1,4 +1,4 @@
-package com.security.config.jpa;
+package com.security.config;
 
 import cn.hutool.core.util.IdUtil;
 import org.hibernate.HibernateException;
@@ -19,12 +19,7 @@ public class MyIdentifierGenerator implements IdentifierGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
         if (o == null) throw new HibernateException(new NullPointerException());
-        if ((((BaseEntity) o).getId()) == null) {
-            long id = IdUtil.getSnowflake(1, 1).nextId();
-            return id;
-        } else {
-            Long id = ((BaseEntity) o).getId();
-            return id;
-        }
+        Long id = ((BasePO) o).getId();
+        return id == null ? IdUtil.getSnowflake(1, 1).nextId() : id;
     }
 }

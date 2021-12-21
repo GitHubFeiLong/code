@@ -1,4 +1,4 @@
-package com.security.config.jpa;
+package com.security.config;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
