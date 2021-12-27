@@ -1,5 +1,6 @@
 package com.security.config;
 
+import com.security.service.MyUserDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -7,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * 类描述：
@@ -16,14 +18,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
  * @version 1.0
  * @date 2021/12/21 21:35
  */
-@Slf4j
-@Configuration
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+// @Slf4j
+// @Configuration
+// @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final MyUserDetailService myUserDetailService;
+
+    public WebSecurityConfig(MyUserDetailService myUserDetailService) {
+        this.myUserDetailService = myUserDetailService;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        super.configure(auth);
+        auth.userDetailsService(myUserDetailService);
     }
 
     @Override

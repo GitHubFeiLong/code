@@ -20,7 +20,7 @@ import java.util.Set;
  * @version 1.0
  * @date 2021/12/21 20:37
  */
-@Component
+// @Component
 public class MyUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
