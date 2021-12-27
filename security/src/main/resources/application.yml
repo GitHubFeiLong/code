@@ -6,9 +6,9 @@ spring:
 
   security:
     # Basic 认证
-#    user:
-#      name: security
-#      password: security
+    user:
+      name: security
+      password: security
 
   # json日期格式化
   jackson:

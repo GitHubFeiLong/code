@@ -7,8 +7,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * 类描述：
@@ -18,52 +29,59 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * @version 1.0
  * @date 2021/12/21 21:35
  */
-// @Slf4j
-// @Configuration
-// @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@Slf4j
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private final MyUserDetailService myUserDetailService;
-
-    public WebSecurityConfig(MyUserDetailService myUserDetailService) {
-        this.myUserDetailService = myUserDetailService;
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailService);
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        super.configure(web);
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 开启自动配置的登录功能
-        http.formLogin() //开启登录
-                //自定义登录请求路径(post)
-                .loginProcessingUrl("/user/login")
-                //自定义登录用户名密码属性名,默认为username和password
-                .usernameParameter("username").passwordParameter("password")
-                //验证成功处理器(前后端分离)：返回状态码200
-                // .successHandler(authenticationSuccessHandler)
-                //验证失败处理器(前后端分离)：返回状态码402
-                // .failureHandler(authenticationFailureHandler)
-                //身份验证详细信息源(登录验证中增加额外字段)
-                // .authenticationDetailsSource(authenticationDetailsSource)
-                .permitAll();
-        // 开启自动配置的注销功能
-        http.logout() //用户注销, 清空session
-                //自定义注销请求路径
-                .logoutUrl("/user/logout");
-                //注销成功处理器(前后端分离)：返回状态码200
-                // .logoutSuccessHandler(logoutSuccessHandler);
-
-        // 添加Jwt过滤器
-
-        // 禁用csrf防御机制(跨域请求伪造)，这么做在测试和开发会比较方便。
-        http.csrf().disable();
+        http
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/myLogin.html")
+                // 处理登录请求的接口
+                .loginProcessingUrl("/login")
+                // 指定登录成功的处理器
+                .successHandler(new AuthenticationSuccessHandler() {
+                    /**
+                     *
+                     * @param request
+                     * @param response
+                     * @param authentication Authentication参数，携带当前登录用户名及其角色等信息
+                     * @throws IOException
+                     * @throws ServletException
+                     */
+                    @Override
+                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                        response.setContentType("application/json;charset=UTF-8");
+                        PrintWriter out = response.getWriter();
+                        out.write("{\"登录成功:" + authentication.getName() + "\"}");
+                    }
+                })
+                // 登录失败处理器
+                .failureHandler(new AuthenticationFailureHandler() {
+                    /**
+                     *
+                     * @param request
+                     * @param response
+                     * @param exception 异常参数
+                     * @throws IOException
+                     * @throws ServletException
+                     */
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                        response.setContentType("application/json;charset=UTF-8");
+                        PrintWriter out = response.getWriter();
+                        out.write("{\"" + exception.getMessage() +"\"}");
+                    }
+                })
+                // 设置登录页可以访问
+                .permitAll()
+                .and()
+                .httpBasic()
+                .and()
+                .csrf().disable();
     }
 }
