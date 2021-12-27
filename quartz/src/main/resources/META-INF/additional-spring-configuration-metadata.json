@@ -1,0 +1,7 @@
+{
+  "properties": [{
+    "name": "job.job-detail-properties",
+    "type": "com.code.property.JobDetailProperties",
+    "description": "自定义任务."
+  }]
+}

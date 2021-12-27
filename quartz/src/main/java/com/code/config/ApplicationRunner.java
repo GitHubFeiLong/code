@@ -1,6 +1,7 @@
 package com.code.config;
 
 import com.code.enumerate.JobMetadataEnum;
+import com.code.property.JobProperties;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +19,13 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
     @Resource
     private JobQuartzManager quartzManager;
 
+    @Resource
+    private JobProperties jobProperties;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         quartzManager.start();
 
-        quartzManager.addJobByJobMetadataEnum(JobMetadataEnum.HELLO_JOB);
+        // quartzManager.addJobByJobMetadataEnum(JobMetadataEnum.HELLO_JOB);
     }
 }

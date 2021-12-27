@@ -13,4 +13,9 @@ spring:
       ddl-auto: create
     show-sql: true
     database: mysql
+job:
+  job-detail-properties:
+    - jobName: s
+      cronExpression: a
+      jobClass: com.code.job.HelloJob.class
 
