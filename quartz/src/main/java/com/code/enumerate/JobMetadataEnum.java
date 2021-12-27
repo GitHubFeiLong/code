@@ -10,7 +10,7 @@ import org.quartz.Job;
  * 枚举描述：
  * 任务的元数据枚举
  * @Author e-Feilong.Chen
- * @Date 2021/11/3 14:29
+ * @Date 2021/12/27 14:29
  */
 @Getter
 public enum JobMetadataEnum {
@@ -21,7 +21,7 @@ public enum JobMetadataEnum {
     HELLO_JOB("hello_job", "0/5 * * * * ? *", HelloJob.class),
 
 
-    TRANSACTION_JOB("scan-asset_base_file_by_fail_log", "0 0/30 * * * ? *", TransactionJob.class),
+    TRANSACTION_JOB("transaction_job", "0 0/30 * * * ? *", TransactionJob.class),
     ;
 
     /**

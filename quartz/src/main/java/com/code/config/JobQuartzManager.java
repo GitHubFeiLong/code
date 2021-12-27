@@ -54,10 +54,6 @@ public class JobQuartzManager implements ApplicationContextAware {
      */
     private ApplicationContext applicationContext;
 
-    // public JobQuartzManager(JobFactory jobFactory) {
-    //     this.jobFactory = jobFactory;
-    // }
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
