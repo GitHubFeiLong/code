@@ -22,8 +22,6 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
     public void run(ApplicationArguments args) throws Exception {
         quartzManager.start();
 
-        new Thread(()->{
-            quartzManager.addJobByJobMetadataEnum(JobMetadataEnum.HELLO_JOB);
-        }).start();
+        quartzManager.addJobByJobMetadataEnum(JobMetadataEnum.HELLO_JOB);
     }
 }
