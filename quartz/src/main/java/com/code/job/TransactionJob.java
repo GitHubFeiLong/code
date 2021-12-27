@@ -24,7 +24,6 @@ public class TransactionJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
         LogPO logPO = new LogPO();
         logPO.setMessage("测试");
         logRepository.save(logPO);
