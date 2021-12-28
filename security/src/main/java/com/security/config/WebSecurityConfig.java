@@ -73,7 +73,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/admin/api/**").hasRole("ADMIN")
+                // hasRole 参数不能加“ROLE_”前缀，hasAuthority 必须全称
+                .antMatchers("/admin/api/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/user/api/**").hasRole("USER")
                 .antMatchers("/app/api/**").permitAll()
                 .anyRequest().authenticated()
