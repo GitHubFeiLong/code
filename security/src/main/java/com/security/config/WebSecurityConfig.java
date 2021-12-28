@@ -21,6 +21,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,9 @@ import java.io.PrintWriter;
 @Slf4j
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Resource
+    private MyUserDetailService userDetailsService;
 
     // @Override
     // protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -80,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/myLogin.html")
+                /// .loginPage("/myLogin.html")
                 // 处理登录请求的接口
                 .loginProcessingUrl("/login")
                 // 指定登录成功的处理器
@@ -119,6 +123,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 // 设置登录页可以访问
                 .permitAll()
+                .and()
+                // 增加自动登录
+                .rememberMe().userDetailsService(userDetailsService)
                 .and()
                 .csrf().disable();
     }
