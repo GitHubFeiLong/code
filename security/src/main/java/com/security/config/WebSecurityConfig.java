@@ -1,9 +1,12 @@
 package com.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.security.service.MyUserDetailService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -27,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 
 /**
  * 类描述：
@@ -124,8 +130,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 设置登录页可以访问
                 .permitAll()
                 .and()
-                // 增加自动登录
+                // 增加自动登录，浏览器cookie：name默认是remember-me
                 .rememberMe().userDetailsService(userDetailsService)
+                .and()
+                // 自定义退出登录
+                .logout()
+                // 指定退出登录接口地址
+                .logoutUrl("/logout")
+                // 退出成功后的跳转地址
+                .logoutSuccessUrl("/")
+                // 退出成功的处理器(在addLogoutHandler之后执行)
+                .logoutSuccessHandler(new LogoutSuccessHandler() {
+                    @Override
+                    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                        PrintWriter writer = response.getWriter();
+                        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                        writer.println("退出成功1");
+                    }
+                })
+                // 让session失效
+                .invalidateHttpSession(true)
+                // 注销成功，删除cookie
+                .deleteCookies("cookie1", "cookie2")
+                // 功能和 logoutSuccessHandler 类似
+                .addLogoutHandler(new LogoutHandler() {
+                    @SneakyThrows
+                    @Override
+                    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+                        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                        PrintWriter writer = response.getWriter();
+                        writer.println("退出成功2");
+                    }
+                })
                 .and()
                 .csrf().disable();
     }
