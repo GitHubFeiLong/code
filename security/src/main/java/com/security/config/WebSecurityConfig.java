@@ -75,9 +75,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return manager;
     }
 
+    /**
+     * 配置密码加密方式
+     *
+     * 例如：$2a$12$pMY7vZrSrHTVO/k9yP8IHec6T7rLhPZDaefX6CEjC.O7rGBVeAx1O
+     * 2a表明了算法的版本，类似的版本号还有2x、2y、2b 等
+     * 12是一个成本参数，它表明该密文需要迭代的次数。12是指2的12次方，
+     *
+     * 注意：不同的迭代次数的加密对象，都能进行密码验证
+     * @return
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // 有参构造函数，指定迭代的次数，2的12次方
+        // return new BCryptPasswordEncoder(12);
         return new BCryptPasswordEncoder();
+    }
+
+    public static void main(String[] args) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
+        // String admin = bCryptPasswordEncoder.encode("admin");
+        boolean boo = bCryptPasswordEncoder
+                .matches("123456", "$2a$10$muGb81DxCI761FI7acc1.OB6mSsmF9bf0F7vpu.L3Afejcq3XL.xy");
+        System.out.println("boo = " + boo);
     }
 
     @Override
