@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @GetMapping("/hello")
-    public String hello() {
+    public String hello() throws InterruptedException {
+        Thread.sleep(2000L);
         return "hello, user";
     }
 }

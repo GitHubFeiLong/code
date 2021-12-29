@@ -166,31 +166,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // session管理,默认已经启用migrateSession策略
                 .and()
                 .sessionManagement()
-
-                .sessionFixation()
+                // 用于设置单个用户允许同时在线的最大会话数，如果没有额外配置，那么新登录的会话会踢掉旧的会话
+                .maximumSessions(1)
+                // .sessionFixation()
                 /*
                     none：不做任何变动，登录之后沿用旧的session。
                     newSession：登录之后创建一个新的session。
                     migrateSession：登录之后创建一个新的session，并将旧的session中的数据复制过来。
                     changeSessionId：不创建新的会话，而是使用由Servlet容器提供的会话固定保护。
                  */
-                .none()
+                // .changeSessionId()
                 // session过期跳转url
-                .invalidSessionUrl("/session/invalid")
+                // .invalidSessionUrl("/session/invalid")
                 // 或者自定义，session过期后的策略
-                .invalidSessionStrategy(new InvalidSessionStrategy() {
-                    @Override
-                    public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
-                    }
-                })
-                // 用于设置单个用户允许同时在线的最大会话数，如果没有额外配置，那么新登录的会话会踢掉旧的会话
-                .maximumSessions(1)
+                // .invalidSessionStrategy(new InvalidSessionStrategy() {
+                //     @Override
+                //     public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+                //
+                //     }
+                // })
                 // 阻止新会话登录，默认false，（需要重启才行）
                 .maxSessionsPreventsLogin(true)
-                .and()
-                .and()
-                .csrf().disable()
+                // .and()
+                // .csrf().disable()
                 ;
     }
 }
