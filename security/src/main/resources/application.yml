@@ -3,12 +3,17 @@ server:
 
 
 spring:
-
   security:
     # Basic 认证
     user:
       name: security
       password: security
+    oauth2:
+      client:
+        registration: #spring.security.oauth2.client.registration是OAuth客户端所有属性的基础前缀。
+          github: #registration下面的github是ClientRegistration的唯一ID
+            client-id: e6a5d401c20a3fa23fad
+            client-secret: 2faacdc0513951fdf04d591bf1db25ceba06191b
 
   # json日期格式化
   jackson:
