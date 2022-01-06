@@ -1,4 +1,4 @@
-package com.code.property;
+package com.code.core;
 
 import com.code.config.JobQuartzManager;
 import lombok.Data;
@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 
 /**
  * 类描述：
- *
+ * 定义一个job的对象
  * @author msi
  * @version 1.0
  * @date 2021/12/27 20:39
  */
 @Data
-public class JobDetailProperties {
+public class JobInformation {
     /**
      * job key group
      */
@@ -39,4 +39,12 @@ public class JobDetailProperties {
      * 执行任务的实例类对象
      */
     private Class<? extends Job> jobClass;
+
+    public JobInformation() {
+    }
+
+    public JobInformation(Class<? extends Job> jobClass) {
+        this.jobClass = jobClass;
+    }
+
 }

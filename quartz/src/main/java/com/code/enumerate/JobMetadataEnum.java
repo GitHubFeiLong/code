@@ -3,15 +3,20 @@ package com.code.enumerate;
 import com.code.config.JobQuartzManager;
 import com.code.job.HelloJob;
 import com.code.job.TransactionJob;
+import com.code.property.JobProperties;
 import lombok.Getter;
 import org.quartz.Job;
 
 /**
  * 枚举描述：
  * 任务的元数据枚举
+ *
+ * @deprecated 硬编码，不灵活。
+ * @see JobProperties
  * @Author e-Feilong.Chen
  * @Date 2021/12/27 14:29
  */
+@Deprecated
 @Getter
 public enum JobMetadataEnum {
 

@@ -25,6 +25,9 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
     @Override
     public void run(ApplicationArguments args) throws Exception {
         quartzManager.start();
+        JobProperties.jobInformationList.stream().forEach(p->{
+            quartzManager.addJobByJobInformation(p);
+        });
 
         // quartzManager.addJobByJobMetadataEnum(JobMetadataEnum.HELLO_JOB);
     }

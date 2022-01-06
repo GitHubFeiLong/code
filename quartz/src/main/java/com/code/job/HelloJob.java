@@ -13,8 +13,9 @@ import java.time.LocalDateTime;
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution
 public class HelloJob implements Job {
+    public static int count = 0;
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        System.out.println(12111111111L);
+        System.out.println("HELLO JOB : " + HelloJob.count++);
         // Object tv1 = jobExecutionContext.getTrigger().getJobDataMap().get("t1");
         // Object tv2 = jobExecutionContext.getTrigger().getJobDataMap().get("t2");
         // Object jv1 = jobExecutionContext.getJobDetail().getJobDataMap().get("j1");

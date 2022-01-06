@@ -13,9 +13,15 @@ spring:
       ddl-auto: create
     show-sql: true
     database: mysql
-job:
-  job-detail-properties:
-    - jobName: s
-      cronExpression: a
-#      jobClass: com.code.job.HelloJob.class
+  main:
+    allow-bean-definition-overriding: true
 
+# 自定义
+job:
+  hello-job:
+    job-class: com.code.job.HelloJob
+    job-name: HH
+    cron-expression: 0/5 * * * * ? *
+  transaction-job:
+    job-name: H1
+    cron-expression: 0/5 * * * * ? *

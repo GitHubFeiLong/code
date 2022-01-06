@@ -1,5 +1,6 @@
 package com.code.config;
 
+import com.code.core.JobInformation;
 import com.code.enumerate.JobMetadataEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -70,9 +71,47 @@ public class JobQuartzManager implements ApplicationContextAware {
 
     /**
      * 添加定时任务
+     * @param jobInformation 定时任务元数据
+     * @return 添加成功返回true
+     */
+    public boolean addJobByJobInformation(JobInformation jobInformation) {
+        String cronExp = jobInformation.getCronExpression();
+
+        if (!CronExpression.isValidExpression(cronExp)) {
+            log.error("Illegal cron expression format({})", cronExp);
+            return false;
+        }
+        String jobName = jobInformation.getJobName();
+        Class jobClass = jobInformation.getJobClass();
+        try {
+            // 任务
+            JobDetail jobDetail = JobBuilder.newJob().withIdentity(new JobKey(jobName, jobInformation.getJobKeyGroup()))
+                    .ofType((Class<Job>) Class.forName(jobClass.getName()))
+                    .build();
+
+            // 触发器
+            Trigger trigger = TriggerBuilder.newTrigger()
+                    .forJob(jobDetail)
+                    .withSchedule(CronScheduleBuilder.cronSchedule(cronExp))
+                    .withIdentity(new TriggerKey(jobName, jobInformation.getTriggerKeyGroup()))
+                    .build();
+            scheduler.scheduleJob(jobDetail, trigger);
+            scheduler.start();
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            log.error("QuartzManager add job failed");
+        }
+
+        return false;
+    }
+
+    /**
+     * 添加定时任务
      * @param jobMetadataEnum 定时任务元数据
      * @return 添加成功返回true
      */
+    @Deprecated
     public boolean addJobByJobMetadataEnum(JobMetadataEnum jobMetadataEnum) {
         String cronExp = jobMetadataEnum.getCronExpression();
 
@@ -110,6 +149,7 @@ public class JobQuartzManager implements ApplicationContextAware {
      * @param jobMetadataEnum 定时任务元数据
      * @return 添加成功返回true
      */
+    @Deprecated
     public boolean updateJobByJobMetadataEnum(JobMetadataEnum jobMetadataEnum) throws SchedulerException {
         String cronExp = jobMetadataEnum.getCronExpression();
 
@@ -147,6 +187,7 @@ public class JobQuartzManager implements ApplicationContextAware {
      * @param jobMetadataEnum 定时任务元数据
      * @return 添加成功返回true
      */
+    @Deprecated
     public boolean deleteJobByJobMetadataEnum(JobMetadataEnum jobMetadataEnum) throws SchedulerException {
         JobKey jobKey = new JobKey(jobMetadataEnum.getJobName(), jobMetadataEnum.getJobKeyGroup());
 

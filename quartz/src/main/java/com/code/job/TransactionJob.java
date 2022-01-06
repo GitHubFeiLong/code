@@ -18,14 +18,12 @@ import javax.annotation.Resource;
  */
 @Component
 public class TransactionJob implements Job {
-
+    public static int count = 0;
     @Resource
     private LogRepository logRepository;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        LogPO logPO = new LogPO();
-        logPO.setMessage("测试");
-        logRepository.save(logPO);
+        System.out.println("TRANSACTION JOB : " + TransactionJob.count++);
     }
 }
