@@ -17,5 +17,5 @@ job:
   job-detail-properties:
     - jobName: s
       cronExpression: a
-      jobClass: com.code.job.HelloJob.class
+#      jobClass: com.code.job.HelloJob.class
 
