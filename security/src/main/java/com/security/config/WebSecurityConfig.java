@@ -1,14 +1,39 @@
 package com.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.security.service.MyUserDetailService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 /**
  * 类描述：
@@ -18,52 +43,172 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * @version 1.0
  * @date 2021/12/21 21:35
  */
-// @Slf4j
-// @Configuration
-// @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@Slf4j
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final MyUserDetailService myUserDetailService;
+    @Resource
+    private MyUserDetailService userDetailsService;
 
-    public WebSecurityConfig(MyUserDetailService myUserDetailService) {
-        this.myUserDetailService = myUserDetailService;
+    // @Override
+    // protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    //     auth.userDetailsService(userDetailsService());
+    // }
+
+    /**
+     * 可以自定义
+     * @see MyUserDetailService
+     * @return
+     */
+    // @Bean
+    public UserDetailsService userDetailsService() {
+        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+        // 密码都是123456
+        // String hashpw1 = BCrypt.hashpw("123456", BCrypt.gensalt());
+        manager.createUser(User.withUsername("user")
+                .password("$2a$10$muGb81DxCI761FI7acc1.OB6mSsmF9bf0F7vpu.L3Afejcq3XL.xy")
+                .roles("USER").build());
+        manager.createUser(User.withUsername("admin")
+                .password("$2a$10$1VQt/Or7vTxMSHwNFAFhUeuR7vxWUW.Vr41.Ig09cOEZIj0aKX5ze")
+                .roles("USER", "ADMIN").build());
+
+        return manager;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailService);
+    /**
+     * 配置密码加密方式
+     *
+     * 例如：$2a$12$pMY7vZrSrHTVO/k9yP8IHec6T7rLhPZDaefX6CEjC.O7rGBVeAx1O
+     * 2a表明了算法的版本，类似的版本号还有2x、2y、2b 等
+     * 12是一个成本参数，它表明该密文需要迭代的次数。12是指2的12次方，
+     *
+     * 注意：不同的迭代次数的加密对象，都能进行密码验证
+     * @return
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // 有参构造函数，指定迭代的次数，2的12次方
+        // return new BCryptPasswordEncoder(12);
+        return new BCryptPasswordEncoder();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        super.configure(web);
+    public static void main(String[] args) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
+        // String admin = bCryptPasswordEncoder.encode("admin");
+        boolean boo = bCryptPasswordEncoder
+                .matches("123456", "$2a$10$muGb81DxCI761FI7acc1.OB6mSsmF9bf0F7vpu.L3Afejcq3XL.xy");
+        System.out.println("boo = " + boo);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 开启自动配置的登录功能
-        http.formLogin() //开启登录
-                //自定义登录请求路径(post)
-                .loginProcessingUrl("/user/login")
-                //自定义登录用户名密码属性名,默认为username和password
-                .usernameParameter("username").passwordParameter("password")
-                //验证成功处理器(前后端分离)：返回状态码200
-                // .successHandler(authenticationSuccessHandler)
-                //验证失败处理器(前后端分离)：返回状态码402
-                // .failureHandler(authenticationFailureHandler)
-                //身份验证详细信息源(登录验证中增加额外字段)
-                // .authenticationDetailsSource(authenticationDetailsSource)
-                .permitAll();
-        // 开启自动配置的注销功能
-        http.logout() //用户注销, 清空session
-                //自定义注销请求路径
-                .logoutUrl("/user/logout");
-                //注销成功处理器(前后端分离)：返回状态码200
-                // .logoutSuccessHandler(logoutSuccessHandler);
-
-        // 添加Jwt过滤器
-
-        // 禁用csrf防御机制(跨域请求伪造)，这么做在测试和开发会比较方便。
-        http.csrf().disable();
+        http
+                .authorizeRequests()
+                // hasRole 参数不能加“ROLE_”前缀，hasAuthority 必须全称
+                .antMatchers("/admin/api/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/user/api/**").hasRole("USER")
+                .antMatchers("/app/api/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                /// .loginPage("/myLogin.html")
+                // 处理登录请求的接口
+                .loginProcessingUrl("/login")
+                // 指定登录成功的处理器
+                .successHandler(new AuthenticationSuccessHandler() {
+                    /**
+                     *
+                     * @param request
+                     * @param response
+                     * @param authentication Authentication参数，携带当前登录用户名及其角色等信息
+                     * @throws IOException
+                     * @throws ServletException
+                     */
+                    @Override
+                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                        response.setContentType("application/json;charset=UTF-8");
+                        PrintWriter out = response.getWriter();
+                        out.write("{\"登录成功:" + authentication.getName() + "\"}");
+                    }
+                })
+                // 登录失败处理器
+                .failureHandler(new AuthenticationFailureHandler() {
+                    /**
+                     *
+                     * @param request
+                     * @param response
+                     * @param exception 异常参数
+                     * @throws IOException
+                     * @throws ServletException
+                     */
+                    @Override
+                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                        response.setContentType("application/json;charset=UTF-8");
+                        PrintWriter out = response.getWriter();
+                        out.write("{\"" + exception.getMessage() +"\"}");
+                    }
+                })
+                // 设置登录页可以访问
+                .permitAll()
+                .and()
+                // 增加自动登录，浏览器cookie：name默认是remember-me
+                .rememberMe().userDetailsService(userDetailsService)
+                .and()
+                // 自定义退出登录
+                .logout()
+                // 指定退出登录接口地址
+                .logoutUrl("/logout")
+                // 退出成功后的跳转地址
+                .logoutSuccessUrl("/")
+                // 退出成功的处理器(在addLogoutHandler之后执行)
+                .logoutSuccessHandler(new LogoutSuccessHandler() {
+                    @Override
+                    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                        PrintWriter writer = response.getWriter();
+                        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                        writer.println("退出成功1");
+                    }
+                })
+                // 让session失效
+                .invalidateHttpSession(true)
+                // 注销成功，删除cookie
+                .deleteCookies("JSESSIONID", "cookie2")
+                // 功能和 logoutSuccessHandler 类似
+                .addLogoutHandler(new LogoutHandler() {
+                    @SneakyThrows
+                    @Override
+                    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+                        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                        PrintWriter writer = response.getWriter();
+                        writer.println("退出成功2");
+                    }
+                })
+                // session管理,默认已经启用migrateSession策略
+                .and()
+                .sessionManagement()
+                // 用于设置单个用户允许同时在线的最大会话数，如果没有额外配置，那么新登录的会话会踢掉旧的会话
+                .maximumSessions(1)
+                // .sessionFixation()
+                /*
+                    none：不做任何变动，登录之后沿用旧的session。
+                    newSession：登录之后创建一个新的session。
+                    migrateSession：登录之后创建一个新的session，并将旧的session中的数据复制过来。
+                    changeSessionId：不创建新的会话，而是使用由Servlet容器提供的会话固定保护。
+                 */
+                // .changeSessionId()
+                // session过期跳转url
+                // .invalidSessionUrl("/session/invalid")
+                // 或者自定义，session过期后的策略
+                // .invalidSessionStrategy(new InvalidSessionStrategy() {
+                //     @Override
+                //     public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+                //
+                //     }
+                // })
+                // 阻止新会话登录，默认false，（需要重启才行）
+                .maxSessionsPreventsLogin(true)
+                // .and()
+                // .csrf().disable()
+                ;
     }
 }
