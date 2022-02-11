@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="spring-data-jpa" />
         <module name="security" />
+        <module name="hibernate-validator" />
         <module name="open-office" />
         <module name="flyway" />
         <module name="screw" />
@@ -20,6 +21,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="flyway" target="8" />
+      <module name="hibernate-validator" target="8" />
       <module name="jdbc" target="1.5" />
       <module name="mybatis-plus" target="8" />
       <module name="open-office" target="1.8" />

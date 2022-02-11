@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/mybatis-plus/pom.xml" />
         <option value="$PROJECT_DIR$/flyway/pom.xml" />
         <option value="$PROJECT_DIR$/security/pom.xml" />
+        <option value="$PROJECT_DIR$/hibernate-validator/pom.xml" />
       </list>
     </option>
   </component>
